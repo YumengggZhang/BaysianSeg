@@ -13,27 +13,6 @@ class Swish(nn.Module):
         return x * torch.sigmoid(x)
 
 
-# class Conv2dSamePadding(nn.Conv2d):
-#     """2D Convolutions with same padding
-#     """
-
-#     def __init__(self, in_channels, out_channels, kernel_size, stride=1, dilation=1, groups=1, bias=True, name=None):
-#         super().__init__(in_channels, out_channels, kernel_size, stride, padding=0, dilation=dilation, groups=groups,
-#                          bias=bias)
-#         self.stride = self.stride if len(self.stride) == 2 else [self.stride[0]] * 2
-#         self.name = name
-
-#     def forward(self, x):
-#         input_h, input_w = x.size()[2:]
-#         kernel_h, kernel_w = self.weight.size()[2:]
-#         stride_h, stride_w = self.stride
-#         output_h, output_w = math.ceil(input_h / stride_h), math.ceil(input_w / stride_w)
-#         pad_h = max((output_h - 1) * self.stride[0] + (kernel_h - 1) * self.dilation[0] + 1 - input_h, 0)
-#         pad_w = max((output_w - 1) * self.stride[1] + (kernel_w - 1) * self.dilation[1] + 1 - input_w, 0)
-#         if pad_h > 0 or pad_w > 0:
-#             x = F.pad(x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2])
-#         return F.conv2d(x, self.weight, self.bias, self.stride, self.padding, self.dilation, self.groups)
-
 class Conv3dSamePadding(nn.Conv3d):
     """
     3D Convolutions with 'same' padding.
@@ -113,11 +92,6 @@ class Conv3dSamePadding(nn.Conv3d):
         )
 
 
-class BatchNorm2d(nn.BatchNorm2d):
-    def __init__(self, num_features, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True, name=None):
-        super().__init__(num_features, eps=eps, momentum=momentum, affine=affine,
-                         track_running_stats=track_running_stats)
-        self.name = name
         
 class BatchNorm3d(nn.BatchNorm3d):
     def __init__(
@@ -249,15 +223,6 @@ class MBConvBlock(nn.Module):
         return x
 
 
-def double_conv(in_channels, out_channels):
-    return nn.Sequential(
-        nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1, padding=1),
-        nn.BatchNorm2d(out_channels),
-        nn.ReLU(inplace=True),
-        nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1),
-        nn.BatchNorm2d(out_channels),
-        nn.ReLU(inplace=True)
-    )
 
 def double_conv_3d(in_channels, out_channels):
     return nn.Sequential(
@@ -269,10 +234,7 @@ def double_conv_3d(in_channels, out_channels):
         nn.ReLU(inplace=True)
     )
 
-def up_conv(in_channels, out_channels):
-    return nn.ConvTranspose2d(
-        in_channels, out_channels, kernel_size=2, stride=2
-    )
+
 
 def up_conv_3d(in_channels, out_channels):
     return nn.ConvTranspose3d(
@@ -280,14 +242,6 @@ def up_conv_3d(in_channels, out_channels):
     )
 
 
-def custom_head(in_channels, out_channels):
-    return nn.Sequential(
-        nn.Dropout(),
-        nn.Linear(in_channels, 512),
-        nn.ReLU(inplace=True),
-        nn.Dropout(),
-        nn.Linear(512, out_channels)
-    )
 
 def custom_head_3d(in_features, out_features):
     return nn.Sequential(
