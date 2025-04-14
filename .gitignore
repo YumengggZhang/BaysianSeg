@@ -1,0 +1,14 @@
+.vscode
+.DS_Store
+*/__pycache__/*dataset/
+dataset/
+outputs/
+*.nii.gz
+*.pt
+*.h5
+outputs/
+dataset/
+*.nii.gz
+*.pt
+*.h5
+logs/
